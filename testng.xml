@@ -1,0 +1,10 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="SalesforceLoginSuite">
+    <parameter name="baseUrl" value="https://login.salesforce.com/?locale=in"/>
+    <test name="LoginTests">
+        <classes>
+            <class name="com.salesforce.tests.SalesforceInvalidLoginTest"/>
+            <class name="com.salesforce.tests.SalesforceValidLoginTest"/>
+        </classes>
+    </test>
+</suite>

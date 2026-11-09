@@ -1,0 +1,15 @@
+# Build output
+target/
+*.class
+
+# IDE metadata
+.idea/
+*.iml
+.vscode/
+
+# Editor/tooling metadata
+.commandcode/
+
+# OS files
+.DS_Store
+Thumbs.db

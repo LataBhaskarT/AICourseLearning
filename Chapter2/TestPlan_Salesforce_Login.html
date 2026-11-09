@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Plan - Salesforce Login (locale=in)</title>
+  <style>
+    :root {
+      --sf-blue: #0176d3;
+      --sf-dark: #032d60;
+      --sf-light: #f3f6f9;
+      --border: #d8dde6;
+      --text: #181818;
+      --muted: #5c5c5c;
+      --green: #2e844a;
+      --amber: #dd7a01;
+      --red: #c23934;
+      --white: #ffffff;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; color: var(--text); background: #eef2f7; line-height: 1.5; }
+    .page { max-width: 1100px; margin: 24px auto; background: var(--white); border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,.06); overflow: hidden; }
+    header { background: linear-gradient(135deg, var(--sf-dark), var(--sf-blue)); color: #fff; padding: 28px 32px; }
+    header h1 { margin: 0 0 6px; font-size: 28px; font-weight: 700; }
+    header p { margin: 0; opacity: .92; }
+    .meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; padding: 18px 32px; background: var(--sf-light); border-bottom: 1px solid var(--border); }
+    .meta-item { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; }
+    .meta-item .label { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); font-weight: 600; }
+    .meta-item .value { font-size: 14px; font-weight: 600; margin-top: 2px; word-break: break-word; }
+    .badge { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; background: #fff3cd; color: #7a5900; border: 1px solid #ffe08a; }
+    main { padding: 8px 32px 32px; }
+    h2 { color: var(--sf-dark); font-size: 20px; margin: 26px 0 10px; padding-bottom: 6px; border-bottom: 2px solid #e8eef5; }
+    h3 { color: var(--sf-dark); font-size: 16px; margin: 18px 0 8px; }
+    p, li { font-size: 14px; }
+    .summary { background: #f8fbff; border: 1px solid #d6e8ff; border-left: 4px solid var(--sf-blue); border-radius: 8px; padding: 14px 16px; margin: 18px 0; }
+    .summary strong { color: var(--sf-dark); }
+    table { width: 100%; border-collapse: collapse; margin: 10px 0 16px; font-size: 13.5px; }
+    th, td { border: 1px solid var(--border); padding: 9px 10px; vertical-align: top; text-align: left; }
+    th { background: #f6f9fc; color: var(--sf-dark); font-weight: 700; }
+    tr:nth-child(even) td { background: #fbfcfe; }
+    .pill { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+    .high { background: #fdecea; color: var(--red); }
+    .med { background: #fff4e5; color: var(--amber); }
+    .low { background: #e8f5ee; color: var(--green); }
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+    .card { border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; background: #fff; }
+    .card h4 { margin: 0 0 6px; color: var(--sf-dark); font-size: 14px; }
+    .card ul { margin: 6px 0 0 18px; padding: 0; }
+    ul { margin: 8px 0 8px 20px; }
+    .footer { padding: 14px 32px 22px; color: var(--muted); font-size: 12px; border-top: 1px solid var(--border); background: #fafbfd; }
+    .approval td { height: 34px; }
+    @media print { body { background: #fff; } .page { margin: 0; border: none; box-shadow: none; max-width: none; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <h1>Test Plan: Salesforce Login</h1>
+      <p>Application Under Test: <strong>https://login.salesforce.com/?locale=in</strong></p>
+    </header>
+
+    <div class="meta">
+      <div class="meta-item"><div class="label">Document ID</div><div class="value">TP-SFDC-LOGIN-001</div></div>
+      <div class="meta-item"><div class="label">Version</div><div class="value">1.0</div></div>
+      <div class="meta-item"><div class="label">Prepared By</div><div class="value">QA Team</div></div>
+      <div class="meta-item"><div class="label">Status</div><div class="value"><span class="badge">Draft — Pending Review</span></div></div>
+      <div class="meta-item"><div class="label">Automation Stack</div><div class="value">Selenium, Java, Maven, TestNG (POM/PageFactory)</div></div>
+      <div class="meta-item"><div class="label">Locator Strategy</div><div class="value">XPath only</div></div>
+    </div>
+
+    <main>
+      <div class="summary">
+        <strong>Executive Summary:</strong> This plan defines the approach to validate the Salesforce login experience for <code>locale=in</code>, covering functional correctness (valid/invalid authentication), UI behavior (username, password, Login, Remember Me), error handling, and locale/navigation sanity. It combines risk-based manual testing with Selenium/TestNG automation to provide fast regression feedback while managing constraints such as credential availability, MFA/CAPTCHA, and potential UI changes.
+      </div>
+
+      <h2>1. Objective</h2>
+      <p>Validate the functionality, usability, reliability, and UI-level security behavior of the Salesforce login page for <code>locale=in</code>. Testing will confirm that:</p>
+      <ul>
+        <li>Authorized users can authenticate with valid credentials and reach the intended Salesforce experience.</li>
+        <li>Invalid or unauthorized attempts are handled with clear, consistent error messaging and no sensitive data leakage.</li>
+        <li>Core controls (username, password, Login, Remember Me, relevant links) behave as expected across supported environments.</li>
+        <li>Defects are identified early, prioritized by risk, and reported with sufficient evidence for resolution.</li>
+      </ul>
+
+      <h2>2. Scope</h2>
+      <h3>2.1 In Scope</h3>
+      <table>
+        <thead><tr><th>Area</th><th>Details</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Login functionality</strong></td><td>Valid login; invalid login; empty fields; incorrect username/password; policy-compliant input variations.</td></tr>
+          <tr><td><strong>UI validation</strong></td><td>Visibility, enablement, basic layout, tab order/focus, and control behavior for key elements.</td></tr>
+          <tr><td><strong>Remember Me</strong></td><td>Selection/deselection behavior and expected persistence per environment/test policy.</td></tr>
+          <tr><td><strong>Error handling</strong></td><td>Error display, clarity, placement, consistency; no credential exposure in UI messages.</td></tr>
+          <tr><td><strong>Navigation &amp; redirects</strong></td><td>Post-login redirect (valid), retention on login page (invalid), locale sanity for <code>locale=in</code>.</td></tr>
+          <tr><td><strong>Non-functional (UI-level)</strong></td><td>Basic responsiveness observations, keyboard/accessibility sanity, cross-browser smoke.</td></tr>
+          <tr><td><strong>Automation</strong></td><td>Selenium + Java + Maven + TestNG regression/smoke candidates implemented in <code>Chapter2/</code>.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>2.2 Out of Scope</h3>
+      <table>
+        <thead><tr><th>Area</th><th>Rationale</th></tr></thead>
+        <tbody>
+          <tr><td>Salesforce backend/internal services</td><td>Black-box UI testing only; no internal system/code access.</td></tr>
+          <tr><td>MFA/SSO/IdP internals</td><td>Excluded unless explicitly enabled with approved test accounts and environment support.</td></tr>
+          <tr><td>Load/stress &amp; penetration testing</td><td>Require separate authorization, environments, and specialized tooling/processes.</td></tr>
+          <tr><td>Third-party integrations &amp; native mobile apps</td><td>Not part of this web login URL scope.</td></tr>
+        </tbody>
+      </table>
+
+      <h2>3. Test Strategy</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h4>Approach</h4>
+          <ul>
+            <li>Black-box, risk-based testing focused on authentication-critical paths.</li>
+            <li>Layered execution: smoke, functional, regression, and time-boxed exploratory testing.</li>
+            <li>Automation for stable, high-value scenarios; manual coverage for usability/visual/accessibility nuances.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>Design Techniques</h4>
+          <ul>
+            <li>Equivalence Partitioning (valid/invalid/empty inputs).</li>
+            <li>Boundary Value Analysis (safe input limits).</li>
+            <li>Decision Tables (username/password/Remember Me combinations).</li>
+            <li>Error Guessing (common user mistakes and edge behaviors).</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>3.1 Test Types</h3>
+      <table>
+        <thead><tr><th>Type</th><th>Description</th><th>Method</th></tr></thead>
+        <tbody>
+          <tr><td>Functional</td><td>Login success/failure, Remember Me, errors, redirects</td><td>Manual + Automated (TestNG)</td></tr>
+          <tr><td>UI/Usability</td><td>Field/button behavior, basic layout, messages</td><td>Manual</td></tr>
+          <tr><td>Compatibility</td><td>Supported browsers/OS</td><td>Manual smoke + targeted automation</td></tr>
+          <tr><td>Accessibility (basic)</td><td>Keyboard navigation, focus, form labels</td><td>Manual checklist</td></tr>
+          <tr><td>Security (behavioral)</td><td>Generic errors, no credential exposure, redirect sanity</td><td>Manual + assertions</td></tr>
+          <tr><td>Localization sanity</td><td><code>locale=in</code> load and key element presence</td><td>Manual</td></tr>
+        </tbody>
+      </table>
+
+      <h3>3.2 Automation Strategy</h3>
+      <table>
+        <thead><tr><th>Item</th><th>Detail</th></tr></thead>
+        <tbody>
+          <tr><td>Framework</td><td>Selenium WebDriver, Java, Maven, TestNG (<code>Chapter2/pom.xml</code>, <code>testng.xml</code>)</td></tr>
+          <tr><td>Design</td><td>Page Object Model + PageFactory, reusable actions (<code>LoginPage</code>, <code>BaseTest</code>)</td></tr>
+          <tr><td>Locators / Sync</td><td>XPath only; <code>WebDriverWait</code>/explicit waits; no <code>Thread.sleep()</code></td></tr>
+          <tr><td>Data &amp; Secrets</td><td>TestNG parameters/DataProvider/system properties; valid credentials injected securely (never hardcoded in VCS)</td></tr>
+          <tr><td>Execution</td><td><code>mvn test</code> from <code>Chapter2</code>; CI-capable via Surefire</td></tr>
+        </tbody>
+      </table>
+
+      <h3>3.3 Entry &amp; Exit Criteria</h3>
+      <div class="grid-2">
+        <div class="card">
+          <h4>Entry Criteria</h4>
+          <ul>
+            <li>AUT URL accessible and stable for testing.</li>
+            <li>Test data available (invalid sets; valid credentials provided securely if executing valid-login path).</li>
+            <li>Browsers/WebDriver and framework build are ready.</li>
+            <li>Plan/cases reviewed for formal cycles.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>Exit Criteria</h4>
+          <ul>
+            <li>Planned cases executed or formally deferred with approval.</li>
+            <li>No unresolved Critical/Blocker defects without approved workaround/risk acceptance.</li>
+            <li>Test summary/report delivered with pass/fail, defect status, and open risks.</li>
+          </ul>
+        </div>
+      </div>
+
+      <h2>4. Test Environment &amp; Deliverables</h2>
+      <table>
+        <thead><tr><th>Component</th><th>Specification (confirm per project)</th></tr></thead>
+        <tbody>
+          <tr><td>Application</td><td>https://login.salesforce.com/?locale=in</td></tr>
+          <tr><td>OS / Browsers</td><td>Windows 10/11 (primary); Chrome latest stable; Edge/Firefox for compatibility smoke as needed</td></tr>
+          <tr><td>Automation</td><td>Java 11+, Maven, Selenium 4.x, TestNG 7.x, compatible ChromeDriver</td></tr>
+          <tr><td>Deliverables</td><td>Test plan, test cases/scenarios, automated scripts, defect reports, execution summary, traceability as needed</td></tr>
+        </tbody>
+      </table>
+
+      <h2>5. Risks &amp; Mitigations</h2>
+      <table>
+        <thead><tr><th>ID</th><th>Risk</th><th>Likelihood</th><th>Impact</th><th>Mitigation</th></tr></thead>
+        <tbody>
+          <tr><td>R1</td><td>Valid credentials unavailable/rotated</td><td><span class="pill med">Medium</span></td><td><span class="pill high">High</span></td><td>Secure credential injection; dedicated test user where allowed; conditional/skip with clear reason.</td></tr>
+          <tr><td>R2</td><td>Salesforce UI/DOM/A-B changes break XPath locators</td><td><span class="pill med">Medium</span></td><td><span class="pill med">Medium</span></td><td>Centralized POM locators; stable anchors; regular smoke; maintenance allocation.</td></tr>
+          <tr><td>R3</td><td>MFA/CAPTCHA/anti-bot triggered by automation</td><td><span class="pill med">Medium</span></td><td><span class="pill high">High</span></td><td>Coordinate accounts/settings; controlled execution; document constraints; manual fallback.</td></tr>
+          <tr><td>R4</td><td>Network/environment instability causes false failures</td><td><span class="pill med">Medium</span></td><td><span class="pill med">Medium</span></td><td>CI retries; evidence capture (logs/screenshots); triage infra vs. product defects.</td></tr>
+          <tr><td>R5</td><td>Security/compliance constraints on production testing</td><td><span class="pill med">Medium</span></td><td><span class="pill high">High</span></td><td>Approvals; follow policy; no secrets in repo; use approved test tenants when available.</td></tr>
+          <tr><td>R6</td><td>Locale-specific (<code>locale=in</code>) behavior missed</td><td><span class="pill low">Low</span></td><td><span class="pill med">Medium</span></td><td>Locale sanity checks; verify key labels/messages/redirects.</td></tr>
+          <tr><td>R7</td><td>Insufficient time/resources for full coverage</td><td><span class="pill med">Medium</span></td><td><span class="pill med">Medium</span></td><td>Risk-based prioritization; automate high-value regressions; communicate trade-offs early.</td></tr>
+        </tbody>
+      </table>
+
+      <h2>6. Overall Resource Allocation</h2>
+      <table>
+        <thead><tr><th>Role</th><th>Count (indicative)</th><th>Responsibilities</th><th>Allocation</th></tr></thead>
+        <tbody>
+          <tr><td>QA Lead / Mentor</td><td>1</td><td>Strategy, plan approval, risk management, stakeholder communication, quality gates</td><td>10–20% overall; higher at planning/review/sign-off</td></tr>
+          <tr><td>Senior QA Automation Engineer</td><td>1</td><td>Framework design/maintenance, CI integration, reviews, complex automation</td><td>40–60% during automation; 10–20% maintenance</td></tr>
+          <tr><td>QA Automation Engineer(s)</td><td>1–2</td><td>Script implementation/execution, data management, defect verification, reporting</td><td>50–80% during execution</td></tr>
+          <tr><td>Manual QA Engineer</td><td>1</td><td>Exploratory, UI/accessibility, locale/cross-browser checks, defect logging</td><td>30–50% during functional cycle</td></tr>
+          <tr><td>Salesforce Admin / App Owner</td><td>As needed</td><td>Test accounts, MFA/SSO config, environment clarifications</td><td>On-demand</td></tr>
+          <tr><td>DevOps / Environment Support</td><td>As needed</td><td>CI runners, browser/grid, network/proxy access</td><td>On-demand</td></tr>
+        </tbody>
+      </table>
+
+      <h3>6.1 Estimated Effort (Indicative)</h3>
+      <table>
+        <thead><tr><th>Activity</th><th>Effort</th></tr></thead>
+        <tbody>
+          <tr><td>Test planning &amp; review</td><td>0.5–1 day</td></tr>
+          <tr><td>Test scenario/case design</td><td>1–2 days</td></tr>
+          <tr><td>Automation enhancement (framework + cases)</td><td>2–4 days</td></tr>
+          <tr><td>Manual functional + exploratory execution</td><td>1–2 days</td></tr>
+          <tr><td>Regression/smoke execution &amp; reporting</td><td>0.5–1 day per cycle</td></tr>
+        </tbody>
+      </table>
+      <p><em>Estimates assume stable access and available test data; adjust for MFA/SSO, additional locales/browsers, or CI setup.</em></p>
+
+      <h2>7. Milestones &amp; Approvals</h2>
+      <table>
+        <thead><tr><th>Milestone</th><th>Target Date</th><th>Owner</th></tr></thead>
+        <tbody>
+          <tr><td>Test plan approved</td><td>TBD</td><td>QA Lead / Stakeholders</td></tr>
+          <tr><td>Test cases/scenarios ready</td><td>TBD</td><td>QA Team</td></tr>
+          <tr><td>Automation smoke ready</td><td>TBD</td><td>Automation Engineer</td></tr>
+          <tr><td>Test execution complete</td><td>TBD</td><td>QA Team</td></tr>
+          <tr><td>Test summary &amp; sign-off</td><td>TBD</td><td>QA Lead / Stakeholders</td></tr>
+        </tbody>
+      </table>
+
+      <table class="approval">
+        <thead><tr><th>Name</th><th>Role</th><th>Signature</th><th>Date</th></tr></thead>
+        <tbody>
+          <tr><td></td><td>QA Lead</td><td></td><td></td></tr>
+          <tr><td></td><td>Project Manager / Product Owner</td><td></td><td></td></tr>
+          <tr><td></td><td>Business Stakeholder</td><td></td><td></td></tr>
+        </tbody>
+      </table>
+    </main>
+
+    <div class="footer">
+      TP-SFDC-LOGIN-001 v1.0 | Salesforce Login Test Plan (<code>locale=in</code>) | Prepared for stakeholder review. Confidentiality and credential handling must follow organizational security policy.
+    </div>
+  </div>
+</body>
+</html>
